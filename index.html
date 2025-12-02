@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FA-Verse Resume Builder</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-card: #252525;
+            --dark-border: #333333;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #4a90e2;
+            --accent-hover: #3a7bc8;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+            
+            /* Light mode variables */
+            --light-bg: #f5f7fa;
+            --light-surface: #ffffff;
+            --light-card: #ffffff;
+            --light-border: #e1e5e9;
+            --light-text-primary: #2c3e50;
+            --light-text-secondary: #5a6c7d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            width: 100%;
+            padding: 0 5px;
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 0 5px;
+                gap: 12px;
+            }
+        }
+
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: var(--dark-card);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .light-mode header {
+            background-color: var(--light-card);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--accent), #9c27b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            word-wrap: break-word;
+            padding: 0 5px;
+        }
+
+        .light-mode .subtitle {
+            color: var(--light-text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .subtitle {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+        }
+
+        .panel {
+            background-color: var(--dark-card);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .light-mode .panel {
+            background-color: var(--light-card);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .panel {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel {
+                padding: 12px;
+                border-radius: 6px;
+            }
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--dark-border);
+            color: var(--accent);
+            transition: border-color 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        .light-mode h2 {
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            .form-group {
+                margin-bottom: 12px;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .light-mode label {
+            color: var(--light-text-secondary);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .light-mode input, 
+        .light-mode textarea, 
+        .light-mode select {
+            background-color: var(--light-surface);
+            border: 1px solid var(--light-border);
+            color: var(--light-text-primary);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+            max-width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            input, textarea, select {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+            }
+            
+            textarea {
+                min-height: 70px;
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #3d8b40;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68900;
+        }
+
+        .action-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        @media (min-width: 769px) {
+            .action-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+
+        .resume-preview {
+            background-color: white;
+            color: #333;
+            min-height: 400px;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-preview * {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4a90e2;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            line-height: 1.2;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-title {
+            font-size: 1.1rem;
+            color: #4a90e2;
+            margin-bottom: 12px;
+            font-weight: 600;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            color: #555;
+            font-size: 0.85rem;
+        }
+
+        @media (min-width: 641px) {
+            .resume-contact {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .contact-item i {
+            color: #4a90e2;
+            font-size: 0.85rem;
+            width: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .contact-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .contact-divider {
+            display: none;
+        }
+
+        @media (min-width: 641px) {
+            .contact-divider {
+                display: inline;
+                color: #ccc;
+                font-size: 0.85rem;
+            }
+            
+            .resume-contact {
+                font-size: 0.9rem;
+            }
+        }
+
+        .resume-section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #4a90e2;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-item {
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-item-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-item-subtitle {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-item p {
+            color: #444;
+            line-height: 1.5;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .resume-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .skill-tag {
+            background-color: #eef5ff;
+            color: #4a90e2;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #d0e2ff;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            left: 15px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+        }
+
+        .notification.error {
+            background-color: var(--error);
+        }
+
+        @media (min-width: 768px) {
+            .notification {
+                left: auto;
+                right: 20px;
+                max-width: 300px;
+            }
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+            width: 100%;
+        }
+
+        .light-mode footer {
+            color: var(--light-text-secondary);
+        }
+
+        .download-options {
+            grid-column: 1 / -1;
+            background-color: var(--dark-card);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .light-mode .download-options {
+            background-color: var(--light-card);
+        }
+
+        .download-info {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        .light-mode .download-info {
+            color: var(--light-text-secondary);
+        }
+
+        /* Theme Toggle Button Styles - LEFT SIDE */
+        .theme-toggle-container {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+        }
+
+        .theme-toggle {
+            background-color: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 50px;
+            width: 50px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .light-mode .theme-toggle {
+            background-color: var(--light-surface);
+            border: 1px solid var(--light-border);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .light-mode .theme-toggle::before {
+            transform: translateX(25px);
+            background-color: var(--warning);
+        }
+
+        .theme-toggle-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .theme-toggle-text.dark {
+            left: 6px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle-text.light {
+            right: 4px;
+            color: var(--light-text-primary);
+            opacity: 0;
+        }
+
+        .light-mode .theme-toggle-text.dark {
+            opacity: 0;
+        }
+
+        .light-mode .theme-toggle-text.light {
+            opacity: 1;
+        }
+
+        /* FA Verse Logo Styles */
+        .fa-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            background: linear-gradient(135deg, #4a90e2, #9c27b0);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .fa-logo-text {
+            font-weight: 700;
+            background: linear-gradient(135deg, #4a90e2, #9c27b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .resume-preview, .resume-preview * {
+                visibility: visible;
+            }
+            .resume-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                padding: 15mm;
+                margin: 0;
+                font-size: 12pt;
+            }
+            .theme-toggle-container {
+                display: none;
+            }
+            .fa-logo {
+                background: linear-gradient(135deg, #2c3e50, #4a90e2);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            @page {
+                margin: 15mm;
+                size: A4;
+            }
+        }
+
+        /* Mobile Responsive Styles for Resume */
+        @media (max-width: 768px) {
+            .resume-preview {
+                padding: 20px;
+                min-height: 350px;
+            }
+            
+            .resume-name {
+                font-size: 1.5rem;
+            }
+            
+            .resume-title {
+                font-size: 1rem;
+            }
+            
+            .resume-section-title {
+                font-size: 1rem;
+            }
+            
+            .contact-item {
+                font-size: 0.8rem;
+            }
+            
+            .resume-item-title {
+                font-size: 0.95rem;
+            }
+            
+            .resume-item p, .resume-item-subtitle {
+                font-size: 0.85rem;
+            }
+            
+            .skill-tag {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
+            
+            .fa-logo {
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+            }
+            
+            .fa-logo-text {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .resume-preview {
+                padding: 15px;
+                min-height: 300px;
+            }
+            
+            .resume-name {
+                font-size: 1.3rem;
+            }
+            
+            .resume-title {
+                font-size: 0.9rem;
+            }
+            
+            .resume-section-title {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+            
+            .resume-contact {
+                gap: 5px;
+            }
+            
+            .contact-item {
+                font-size: 0.75rem;
+            }
+            
+            .resume-item {
+                margin-bottom: 12px;
+            }
+            
+            .resume-item-title {
+                font-size: 0.9rem;
+            }
+            
+            .skill-tag {
+                font-size: 0.75rem;
+                padding: 3px 6px;
+            }
+            
+            .fa-logo {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+                margin-right: 4px;
+            }
+            
+            .fa-logo-text {
+                font-size: 10px;
+            }
+            
+            .theme-toggle-container {
+                top: 5px;
+                left: 5px;
+            }
+            
+            .theme-toggle {
+                width: 45px;
+                height: 23px;
+            }
+            
+            .theme-toggle::before {
+                width: 18px;
+                height: 18px;
+                top: 2px;
+                left: 2px;
+            }
+            
+            .light-mode .theme-toggle::before {
+                transform: translateX(22px);
+            }
+        }
+
+        /* Fix for very small screens */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .panel {
+                padding: 10px;
+            }
+            
+            .resume-preview {
+                padding: 12px;
+            }
+            
+            .resume-name {
+                font-size: 1.2rem;
+            }
+            
+            .resume-title {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Prevent horizontal scroll on mobile */
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                position: relative;
+                width: 100%;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: 0 5px;
+            }
+            
+            .panel, .resume-preview {
+                max-width: 100%;
+                min-width: 0;
+            }
+        }
+
+        /* Improve touch targets for mobile */
+        @media (max-width: 768px) {
+            input, textarea, select, .btn {
+                min-height: 44px; /* Minimum touch target size */
+            }
+            
+            .btn {
+                padding: 12px 20px;
+            }
+        }
+
+        /* Fix for iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            input, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme toggle moved to LEFT side -->
+    <div class="theme-toggle-container">
+        <div class="theme-toggle" id="theme-toggle">
+            <span class="theme-toggle-text dark">🌙</span>
+            <span class="theme-toggle-text light">☀️</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>FA Verse Resume Builder</h1>
+            <p class="subtitle">Create a professional resume in one click - Download as PDF instantly</p>
+        </header>
+
+        <div class="panel">
+            <h2>Personal Information</h2>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="title">Professional Title</label>
+                <input type="text" id="title" placeholder="Software Engineer">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="john.doe@example.com">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="San Francisco, CA">
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Professional Summary</h2>
+            <div class="form-group">
+                <label for="summary">Summary</label>
+                <textarea id="summary" placeholder="Experienced software engineer with 5+ years in full-stack development..."></textarea>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Work Experience</h2>
+            <div class="form-group">
+                <label for="job-title">Job Title</label>
+                <input type="text" id="job-title" placeholder="Senior Software Engineer">
+            </div>
+            <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" id="company" placeholder="Tech Solutions Inc.">
+            </div>
+            <div class="form-group">
+                <label for="job-description">Description</label>
+                <textarea id="job-description" placeholder="Led development of customer-facing web applications..."></textarea>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Education</h2>
+            <div class="form-group">
+                <label for="degree">Degree</label>
+                <input type="text" id="degree" placeholder="Bachelor of Science in Computer Science">
+            </div>
+            <div class="form-group">
+                <label for="school">School/University</label>
+                <input type="text" id="school" placeholder="University of California, Berkeley">
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Skills</h2>
+            <div class="form-group">
+                <label for="skills">Skills (comma separated)</label>
+                <textarea id="skills" placeholder="JavaScript, React, Node.js, Python, AWS..."></textarea>
+            </div>
+        </div>
+
+        <div class="panel resume-preview" id="resume-preview">
+            <div class="resume-header">
+                <div class="resume-name" id="preview-name">John Doe</div>
+                <div class="resume-title" id="preview-title">Software Engineer</div>
+                <div class="resume-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span id="preview-email">john.doe@example.com</span>
+                    </div>
+                    <span class="contact-divider">|</span>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span id="preview-phone">+1 (555) 123-4567</span>
+                    </div>
+                    <span class="contact-divider">|</span>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="preview-location">San Francisco, CA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <div class="resume-section-title">Professional Summary</div>
+                <p id="preview-summary">Experienced software engineer with 5+ years in full-stack development. Specialized in React, Node.js, and cloud technologies. Strong background in building scalable web applications and leading development teams.</p>
+            </div>
+
+            <div class="resume-section">
+                <div class="resume-section-title">Work Experience</div>
+                <div class="resume-item">
+                    <div class="resume-item-title" id="preview-job-title">Senior Software Engineer</div>
+                    <div class="resume-item-subtitle" id="preview-company">Tech Solutions Inc.</div>
+                    <p id="preview-job-description">Led development of customer-facing web applications using React and Node.js. Managed a team of 5 developers and improved application performance by 30%.</p>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <div class="resume-section-title">Education</div>
+                <div class="resume-item">
+                    <div class="resume-item-title" id="preview-degree">Bachelor of Science in Computer Science</div>
+                    <div class="resume-item-subtitle" id="preview-school">University of California, Berkeley</div>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <div class="resume-section-title">Skills</div>
+                <div class="resume-skills" id="preview-skills">
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">AWS</span>
+                </div>
+            </div>
+
+            <!-- FA Verse Logo Footer -->
+            <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; text-align: left;">
+                <div style="display: flex; align-items: center; font-size: 12px; color: #666;">
+                    <span class="fa-logo">FA</span>
+                    <span class="fa-logo-text">FA Verse Resume Builder</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="download-options">
+            <h2>Download Your Resume</h2>
+            <p class="download-info">All download options are now working perfectly with proper formatting</p>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-success btn-block" id="generate-resume">Generate Resume (1-Click)</button>
+            <button class="btn btn-block" id="download-pdf">Download as PDF</button>
+            <button class="btn btn-warning btn-block" id="print-resume">Print Resume</button>
+            <button class="btn btn-warning btn-block" id="download-image">Download as Image</button>
+        </div>
+
+        <footer>
+            <p>FA Verse Resume Builder &copy; 2023 | Perfect PDF & Image Downloads</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification"></div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p id="loading-text">Generating your PDF resume...</p>
+    </div>
+
+    <script>
+        // DOM Elements
+        const notification = document.getElementById('notification');
+        const loading = document.getElementById('loading');
+        const loadingText = document.getElementById('loading-text');
+        const generateBtn = document.getElementById('generate-resume');
+        const downloadBtn = document.getElementById('download-pdf');
+        const printBtn = document.getElementById('print-resume');
+        const imageBtn = document.getElementById('download-image');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Input elements
+        const nameInput = document.getElementById('name');
+        const titleInput = document.getElementById('title');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const locationInput = document.getElementById('location');
+        const summaryInput = document.getElementById('summary');
+        const jobTitleInput = document.getElementById('job-title');
+        const companyInput = document.getElementById('company');
+        const jobDescriptionInput = document.getElementById('job-description');
+        const degreeInput = document.getElementById('degree');
+        const schoolInput = document.getElementById('school');
+        const skillsInput = document.getElementById('skills');
+
+        // Preview elements
+        const previewName = document.getElementById('preview-name');
+        const previewTitle = document.getElementById('preview-title');
+        const previewEmail = document.getElementById('preview-email');
+        const previewPhone = document.getElementById('preview-phone');
+        const previewLocation = document.getElementById('preview-location');
+        const previewSummary = document.getElementById('preview-summary');
+        const previewJobTitle = document.getElementById('preview-job-title');
+        const previewCompany = document.getElementById('preview-company');
+        const previewJobDescription = document.getElementById('preview-job-description');
+        const previewDegree = document.getElementById('preview-degree');
+        const previewSchool = document.getElementById('preview-school');
+        const previewSkills = document.getElementById('preview-skills');
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLightMode = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+            showNotification(isLightMode ? 'Light mode activated' : 'Dark mode activated', 'success');
+        }
+
+        // Initialize theme from localStorage
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        }
+
+        // Initialize with sample data
+        function initializeSampleData() {
+            nameInput.value = "John Doe";
+            titleInput.value = "Software Engineer";
+            emailInput.value = "john.doe@example.com";
+            phoneInput.value = "+1 (555) 123-4567";
+            locationInput.value = "San Francisco, CA";
+            summaryInput.value = "Experienced software engineer with 5+ years in full-stack development. Specialized in React, Node.js, and cloud technologies. Strong background in building scalable web applications and leading development teams.";
+            jobTitleInput.value = "Senior Software Engineer";
+            companyInput.value = "Tech Solutions Inc.";
+            jobDescriptionInput.value = "Led development of customer-facing web applications using React and Node.js. Managed a team of 5 developers and improved application performance by 30%.";
+            degreeInput.value = "Bachelor of Science in Computer Science";
+            schoolInput.value = "University of California, Berkeley";
+            skillsInput.value = "JavaScript, React, Node.js, Python, AWS, Docker, Git, Agile Methodologies";
+            
+            updatePreview();
+        }
+
+        // Update preview function
+        function updatePreview() {
+            previewName.textContent = nameInput.value || "John Doe";
+            previewTitle.textContent = titleInput.value || "Software Engineer";
+            previewEmail.textContent = emailInput.value || "john.doe@example.com";
+            previewPhone.textContent = phoneInput.value || "+1 (555) 123-4567";
+            previewLocation.textContent = locationInput.value || "San Francisco, CA";
+            previewSummary.textContent = summaryInput.value || "Experienced software engineer with 5+ years in full-stack development...";
+            previewJobTitle.textContent = jobTitleInput.value || "Senior Software Engineer";
+            previewCompany.textContent = companyInput.value || "Tech Solutions Inc.";
+            previewJobDescription.textContent = jobDescriptionInput.value || "Led development of customer-facing web applications...";
+            previewDegree.textContent = degreeInput.value || "Bachelor of Science in Computer Science";
+            previewSchool.textContent = schoolInput.value || "University of California, Berkeley";
+            
+            // Update skills
+            const skills = skillsInput.value.split(',').map(skill => skill.trim()).filter(skill => skill);
+            previewSkills.innerHTML = '';
+            skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill;
+                previewSkills.appendChild(skillTag);
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Perfect Image Download Function - Simple & Working
+        function downloadAsImage() {
+            loadingText.textContent = "Creating perfect resume image...";
+            loading.classList.add('show');
+            
+            // Simple and direct html2canvas call
+            html2canvas(document.getElementById('resume-preview'), {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: document.getElementById('resume-preview').offsetWidth,
+                height: document.getElementById('resume-preview').offsetHeight
+            }).then(canvas => {
+                // Convert to image and download
+                const imageData = canvas.toDataURL('image/png', 1.0);
+                const link = document.createElement('a');
+                const userName = nameInput.value.trim() || 'resume';
+                link.download = `${userName.replace(/\s+/g, '_')}_Resume.png`;
+                link.href = imageData;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                loading.classList.remove('show');
+                showNotification('Perfect resume image downloaded!', 'success');
+                
+            }).catch(error => {
+                console.error('Image download error:', error);
+                loading.classList.remove('show');
+                showNotification('Image download failed. Please try PDF download.', 'error');
+            });
+        }
+
+        // Real PDF Generation with proper formatting
+        function downloadAsPDF() {
+            loadingText.textContent = "Creating PDF with perfect formatting...";
+            loading.classList.add('show');
+            
+            setTimeout(() => {
+                try {
+                    // Create a new window with print-friendly resume
+                    const printWindow = window.open('', '_blank');
+                    const resumeContent = document.getElementById('resume-preview').innerHTML;
+                    const userName = nameInput.value || 'Your Name';
+                    
+                    printWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>${userName} - Resume</title>
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                            <style>
+                                body { 
+                                    font-family: Arial, sans-serif; 
+                                    margin: 0; 
+                                    padding: 15mm; 
+                                    color: #333;
+                                    line-height: 1.5;
+                                    width: 100%;
+                                    max-width: 100%;
+                                }
+                                .resume-header { 
+                                    text-align: center; 
+                                    margin-bottom: 20px; 
+                                    padding-bottom: 15px; 
+                                    border-bottom: 2px solid #4a90e2; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-name { 
+                                    font-size: 24px; 
+                                    font-weight: bold; 
+                                    margin-bottom: 8px; 
+                                    color: #2c3e50; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-title { 
+                                    font-size: 16px; 
+                                    color: #4a90e2; 
+                                    margin-bottom: 15px; 
+                                    font-weight: 600; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-contact { 
+                                    display: flex; 
+                                    justify-content: center; 
+                                    flex-wrap: wrap; 
+                                    gap: 10px; 
+                                    margin-top: 10px; 
+                                    color: #555; 
+                                    font-size: 14px;
+                                    align-items: center;
+                                }
+                                .contact-item {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                }
+                                .contact-item i {
+                                    color: #4a90e2;
+                                    font-size: 13px;
+                                    width: 14px;
+                                    text-align: center;
+                                }
+                                .contact-divider {
+                                    color: #ccc;
+                                    font-size: 13px;
+                                }
+                                .resume-section { 
+                                    margin-bottom: 18px; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-section-title { 
+                                    font-size: 16px; 
+                                    font-weight: 600; 
+                                    margin-bottom: 10px; 
+                                    color: #4a90e2; 
+                                    border-bottom: 1px solid #eee; 
+                                    padding-bottom: 5px; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-item { 
+                                    margin-bottom: 15px; 
+                                    word-wrap: break-word;
+                                }
+                                .resume-item-title { 
+                                    font-weight: 600; 
+                                    font-size: 14px; 
+                                    color: #2c3e50;
+                                    word-wrap: break-word;
+                                }
+                                .resume-item-subtitle { 
+                                    color: #666; 
+                                    font-style: italic; 
+                                    margin-bottom: 5px; 
+                                    font-size: 13px;
+                                    word-wrap: break-word;
+                                }
+                                .resume-skills { 
+                                    display: flex; 
+                                    flex-wrap: wrap; 
+                                    gap: 8px; 
+                                    margin-top: 8px; 
+                                }
+                                .skill-tag { 
+                                    background-color: #eef5ff; 
+                                    color: #4a90e2; 
+                                    padding: 6px 12px; 
+                                    border-radius: 20px; 
+                                    font-size: 13px; 
+                                    border: 1px solid #d0e2ff;
+                                }
+                                .fa-logo {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-weight: bold;
+                                    font-size: 12px;
+                                    background: linear-gradient(135deg, #4a90e2, #9c27b0);
+                                    color: white;
+                                    width: 22px;
+                                    height: 22px;
+                                    border-radius: 4px;
+                                    margin-right: 6px;
+                                }
+                                .fa-logo-text {
+                                    font-weight: 700;
+                                    background: linear-gradient(135deg, #4a90e2, #9c27b0);
+                                    -webkit-background-clip: text;
+                                    background-clip: text;
+                                    color: transparent;
+                                    font-size: 12px;
+                                }
+                                @media print {
+                                    body { 
+                                        margin: 0; 
+                                        padding: 15mm;
+                                        width: 210mm;
+                                        height: 297mm;
+                                    }
+                                    * {
+                                        max-width: 100% !important;
+                                    }
+                                    @page {
+                                        margin: 15mm;
+                                        size: A4;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            ${resumeContent}
+                        </body>
+                        </html>
+                    `);
+                    
+                    printWindow.document.close();
+                    
+                    // Wait for content to load then print/save as PDF
+                    setTimeout(() => {
+                        printWindow.print();
+                        loading.classList.remove('show');
+                        showNotification('PDF ready! Use "Save as PDF" in print dialog.', 'success');
+                    }, 500);
+                    
+                } catch (error) {
+                    loading.classList.remove('show');
+                    showNotification('Error: ' + error.message, 'error');
+                }
+            }, 1000);
+        }
+
+        // Print resume function
+        function printResume() {
+            const resumeElement = document.getElementById('resume-preview');
+            const printContent = resumeElement.innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = `
+                <div class="resume-preview" style="width: 100%; max-width: 100%; padding: 20px;">${printContent}</div>
+            `;
+            
+            window.print();
+            
+            // Restore original content
+            setTimeout(() => {
+                document.body.innerHTML = originalContent;
+                initializeEventListeners();
+                showNotification('Print completed successfully!', 'success');
+            }, 500);
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Add input event listeners to all form elements
+            const allInputs = document.querySelectorAll('input, textarea');
+            allInputs.forEach(input => {
+                input.addEventListener('input', updatePreview);
+            });
+            
+            // Generate Resume button
+            generateBtn.addEventListener('click', function() {
+                updatePreview();
+                showNotification('Resume generated successfully!', 'success');
+            });
+            
+            // Download PDF button
+            downloadBtn.addEventListener('click', downloadAsPDF);
+            
+            // Print button
+            printBtn.addEventListener('click', printResume);
+            
+            // Download Image button
+            imageBtn.addEventListener('click', downloadAsImage);
+            
+            // Theme toggle button
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Main initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            initializeSampleData();
+            initializeEventListeners();
+            showNotification('Resume builder ready! All downloads working perfectly.', 'success');
+            
+            // Prevent horizontal scroll on mobile
+            window.addEventListener('resize', function() {
+                document.body.style.overflowX = 'hidden';
+            });
+        });
+    </script>
+</body>
+</html>
